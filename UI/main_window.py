@@ -38,7 +38,7 @@ class MainWindow:
         view_window = ViewDataWindow(self.master, self.username)
 
     def go_back(self):
-        messagebox.showinfo("信息", "返回上一级功能尚未实现。")
+        messagebox.showinfo("信息", "已经是主界面")
 
     def exit_system(self):
         self.master.quit()

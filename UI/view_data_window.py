@@ -5,6 +5,7 @@ from matplotlib import pyplot as plt
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from finance.Finance_Data import FinanceData
+from navigation import Navigation
 
 class ViewDataWindow:
     def __init__(self, master, username: str):
@@ -23,10 +24,17 @@ class ViewDataWindow:
         self.label_total = tk.Label(self.top, text=f"总计: {self.total_balance:.2f}", font=("Arial", 16))
         self.label_total.pack(pady=10)
 
-        self.plot_data()  # 绘制图形
+        self.histogram_button = tk.Button(self.top, text="绘制直方图", command=self.plot_histogram)
+        self.histogram_button.pack(pady=5)
 
-        self.back_button = tk.Button(self.top, text="返回", command=self.top.destroy)
+        self.pie_chart_button = tk.Button(self.top, text="绘制扇形图", command=self.plot_pie_chart)
+        self.pie_chart_button.pack(pady=5)
+
+        self.navigation = Navigation(self.top)
+        self.back_button = tk.Button(self.top, text="返回", command=self.navigation.go_back)
         self.back_button.pack(pady=10)
+
+        self.canvas = None  # 用于保存画布引用
 
     def calculate_total_income(self):
         return sum(entry['amount'] for entry in self.data if entry['type'] == '收入')
@@ -34,28 +42,76 @@ class ViewDataWindow:
     def calculate_total_expense(self):
         return sum(entry['amount'] for entry in self.data if entry['type'] == '支出')
 
-    def plot_data(self):
-        # 设置字体为 SimHei（黑体），确保支持中文字符
+    def plot_histogram(self):
         plt.rcParams['font.family'] = 'SimHei'
-        plt.rcParams['axes.unicode_minus'] = False  # 正常显示负
-        # 创建 Matplotlib 图形
+        plt.rcParams['axes.unicode_minus'] = False  # 正常显示负号
+
         fig = Figure(figsize=(5, 4), dpi=100)
         ax = fig.add_subplot(111)
 
-        # 准备数据
         income_data = [entry['amount'] for entry in self.data if entry['type'] == '收入']
         expense_data = [entry['amount'] for entry in self.data if entry['type'] == '支出']
         labels = ['收入', '支出']
 
-        # 绘制直方图
         ax.bar(labels, [sum(income_data), sum(expense_data)], color=['green', 'red'])
         ax.set_ylabel('金额')
         ax.set_title('收入与支出对比')
+
+        if self.canvas:
+            self.canvas.get_tk_widget().destroy()
+
+        self.canvas = FigureCanvasTkAgg(fig, master=self.top)
+        self.canvas.draw()
+        self.canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+
+    def plot_pie_chart(self):
+        # 加载数据
+        entries = self.finance_data.load_data()
+
+        # 初始化数据
+        income_dict = {}
+        expense_dict = {}
+
+        # 数据聚合
+        for entry in entries:
+            amount = entry['amount']
+            if entry['type'] == '收入':
+                income_dict[entry['note']] = income_dict.get(entry['note'], 0) + amount
+            elif entry['type'] == '支出':
+                expense_dict[entry['note']] = expense_dict.get(entry['note'], 0) + amount
+
+        # 准备扇形图数据
+        income_labels = list(income_dict.keys())
+        income_sizes = list(income_dict.values())
+        expense_labels = list(expense_dict.keys())
+        expense_sizes = list(expense_dict.values())
+
+        # 设置字体
+        plt.rcParams['font.family'] = 'SimHei'  # 设置字体为 SimHei
+        plt.rcParams['axes.unicode_minus'] = False  # 正常显示负号
+
+        # 创建图形
+        fig, ax = plt.subplots(1, 2, figsize=(10, 5))  # 两个子图，设置大小
+
+        # 绘制收入扇形图
+        ax[0].pie(income_sizes, labels=income_labels, autopct='%1.1f%%', startangle=90)
+        ax[0].set_title('收入分布')
+
+        # 绘制支出扇形图
+        ax[1].pie(expense_sizes, labels=expense_labels, autopct='%1.1f%%', startangle=90)
+        ax[1].set_title('支出分布')
 
         # 将图形嵌入到 Tkinter 窗口
         canvas = FigureCanvasTkAgg(fig, master=self.top)
         canvas.draw()
         canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+
+        # 清除之前的图形（如果有）
+        for widget in self.top.winfo_children():
+            if isinstance(widget, tk.Frame):
+                widget.destroy()
+        canvas.get_tk_widget().pack()
+
 
 if __name__ == "__main__":
     # 测试代码可以放在这里
