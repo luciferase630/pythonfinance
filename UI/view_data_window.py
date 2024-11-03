@@ -1,6 +1,5 @@
 import tkinter as tk
 from tkinter import messagebox
-import json
 import matplotlib.pyplot as plt
 from finance.Finance_Data import FinanceData
 
@@ -33,6 +32,10 @@ class ViewDataWindow:
         return sum(entry['amount'] for entry in self.data if entry['type'] == '支出')
 
     def plot_data(self):
+        # 设置字体为 SimHei（黑体），可以根据需要更改为其他支持中文的字体
+        plt.rcParams['font.family'] = 'SimHei'
+        plt.rcParams['axes.unicode_minus'] = False  # 正常显示负号
+
         # 准备数据
         income_data = [entry['amount'] for entry in self.data if entry['type'] == '收入']
         expense_data = [entry['amount'] for entry in self.data if entry['type'] == '支出']
@@ -46,7 +49,6 @@ class ViewDataWindow:
 
         # 显示图形
         plt.show()
-
 if __name__ == "__main__":
     # 测试代码可以放在这里
     pass

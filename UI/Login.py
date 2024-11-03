@@ -10,6 +10,7 @@ class FinanceApp:
     def __init__(self, root):
         self.root = root
         self.root.title("个人财务管理系统")
+        self.root.geometry("1000x800")  # 设置窗口大小
 
         # 创建存储和认证系统的实例
         storage = Storage()
@@ -50,12 +51,11 @@ class FinanceApp:
     def login(self):
         username = self.username_entry.get()
         password = self.password_entry.get()
-        try:
-            result = self.auth_system.login(username, password)
-            messagebox.showinfo("登录", result)
+        if self.auth_system.login(username, password):  # 检查登录结果
+            messagebox.showinfo("登录", f"欢迎回来, {username}!")
             self.open_main_window(username)  # 登录成功后打开主窗口
-        except ValueError as e:
-            messagebox.showerror("错误", str(e))
+        else:
+            messagebox.showerror("错误", "用户名或密码错误")  # 登录失败
 
     def open_main_window(self, username):
         self.clear_frame()  # 清空登录界面

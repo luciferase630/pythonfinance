@@ -16,5 +16,5 @@ class AuthSystem:
 
     def login(self, username, password):
         if username in self.users and self.users[username] == password:
-            return f"欢迎回来, {username}!"
-        return "用户名或密码错误"
+            return True  # 登录成功
+        return False  # 登录失败

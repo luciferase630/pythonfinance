@@ -12,7 +12,7 @@ class MainWindow:
     def __init__(self, master, username):
         self.master = master
         self.master.title("个人财务管理系统")
-        self.master.geometry("600x400")  # 设置窗口大小
+        self.master.geometry("1000x800")  # 设置窗口大小
 
         self.username = username
         self.finance_data = FinanceData(self.username)  # 实例化 FinanceData
