@@ -3,6 +3,7 @@ from auth.storage import Storage
 from auth.auth_system import AuthSystem
 import tkinter as tk
 from tkinter import messagebox
+from UI.main_window import MainWindow  # 导入主窗口类
 
 
 class FinanceApp:
@@ -52,8 +53,13 @@ class FinanceApp:
         try:
             result = self.auth_system.login(username, password)
             messagebox.showinfo("登录", result)
+            self.open_main_window(username)  # 登录成功后打开主窗口
         except ValueError as e:
             messagebox.showerror("错误", str(e))
+
+    def open_main_window(self, username):
+        self.clear_frame()  # 清空登录界面
+        MainWindow(self.root, username)  # 实例化主窗口
 
     def register(self):
         username = self.username_entry.get()
