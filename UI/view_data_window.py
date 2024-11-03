@@ -1,6 +1,9 @@
 import tkinter as tk
 from tkinter import messagebox
-import matplotlib.pyplot as plt
+
+from matplotlib import pyplot as plt
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from finance.Finance_Data import FinanceData
 
 class ViewDataWindow:
@@ -32,9 +35,12 @@ class ViewDataWindow:
         return sum(entry['amount'] for entry in self.data if entry['type'] == '支出')
 
     def plot_data(self):
-        # 设置字体为 SimHei（黑体），可以根据需要更改为其他支持中文的字体
+        # 设置字体为 SimHei（黑体），确保支持中文字符
         plt.rcParams['font.family'] = 'SimHei'
-        plt.rcParams['axes.unicode_minus'] = False  # 正常显示负号
+        plt.rcParams['axes.unicode_minus'] = False  # 正常显示负
+        # 创建 Matplotlib 图形
+        fig = Figure(figsize=(5, 4), dpi=100)
+        ax = fig.add_subplot(111)
 
         # 准备数据
         income_data = [entry['amount'] for entry in self.data if entry['type'] == '收入']
@@ -42,13 +48,15 @@ class ViewDataWindow:
         labels = ['收入', '支出']
 
         # 绘制直方图
-        fig, ax = plt.subplots()
         ax.bar(labels, [sum(income_data), sum(expense_data)], color=['green', 'red'])
         ax.set_ylabel('金额')
         ax.set_title('收入与支出对比')
 
-        # 显示图形
-        plt.show()
+        # 将图形嵌入到 Tkinter 窗口
+        canvas = FigureCanvasTkAgg(fig, master=self.top)
+        canvas.draw()
+        canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+
 if __name__ == "__main__":
     # 测试代码可以放在这里
     pass
