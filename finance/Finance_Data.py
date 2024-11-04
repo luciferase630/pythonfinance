@@ -4,7 +4,7 @@ import os
 class FinanceData:
     def __init__(self, username):
         base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        self.filename = os.path.join(base_dir, 'data', f'{username}_finance.json')
+        self.filename = os.path.join(base_dir, 'FinancialData', f'{username}_finance.json')
         self.data = self.load_financial_data()
 
     def load_financial_data(self):
@@ -27,7 +27,7 @@ class FinanceData:
         if isinstance(self.data, list):  # 确保数据是一个列表
             self.data.append(entry)
         else:
-            self.data['entries'] = self.data.get('entries', [])
+            self.data['entries'] = self.data.get('entries', [])  #加载进来之后是一个字典里面套列表
             self.data['entries'].append(entry)
         self.save_financial_data()
 

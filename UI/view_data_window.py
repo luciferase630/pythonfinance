@@ -47,6 +47,8 @@ class ViewDataWindow:
             self.canvas.get_tk_widget().destroy()
             self.canvas = None  # 重置画布引用
 
+
+
     def plot_histogram(self):
         self.clear_previous_plot()  # 清除之前的图形
         plt.rcParams['font.family'] = 'SimHei'

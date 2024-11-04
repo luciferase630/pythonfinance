@@ -2,7 +2,7 @@ import json
 import os
 
 class Storage:
-    def __init__(self, filename='data/users.json'):
+    def __init__(self, filename='AccountData/users.json'):
         # 获取项目根目录的绝对路径
         base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # 向上两级目录
         self.filename = os.path.join(base_dir, filename)  # 组合为绝对路径

@@ -5,12 +5,15 @@ from UI.navigation import Navigation
 from UI.view_data_window import ViewDataWindow
 from auth.auth_system import AuthSystem  # 假设 AuthSystem 存在
 from auth.storage import Storage
+from budget.budget_setting import BudgetSetting
 from finance.Finance_Data import FinanceData
 
 from entry_data_window import EntryDataWindow  # 导入新的 EntryDataWindow 类
 
 class MainWindow:
     def __init__(self, master, username,app):
+
+
 
 
         self.app = app  # 保存对 FinanceApp 实例的引用
@@ -34,8 +37,14 @@ class MainWindow:
         self.back_button = tk.Button(master, text="返回上一级", command=self.go_back)
         self.back_button.pack(pady=10)
 
+        # 在 __init__ 方法中添加按钮
+        self.budget_button = tk.Button(master, text="设定预算", command=self.set_budget)
+        self.budget_button.pack(pady=10)
+
+
         self.exit_button = tk.Button(master, text="关闭系统", command=self.exit_system)
         self.exit_button.pack(pady=10)
+
 
     def open_entry_data_window(self):
         """打开录入财务数据窗口"""
@@ -58,6 +67,12 @@ class MainWindow:
 
     def exit_system(self):
         self.master.quit()
+
+    def set_budget(self):
+        """打开设定预算的窗口"""
+        # 初始化 BudgetSetting
+        BudgetSetting(self.username)
+
 
 if __name__ == "__main__":
     root = tk.Tk()
