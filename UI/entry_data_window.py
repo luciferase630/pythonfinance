@@ -33,7 +33,7 @@ class EntryDataWindow:
         self.entry_date.pack(pady=5)
 
         # 备注输入框
-        self.label4 = tk.Label(self.top, text="备注:")
+        self.label4 = tk.Label(self.top, text="类别:")
         self.label4.pack(pady=5)
         self.entry_note = tk.Entry(self.top)
         self.entry_note.pack(pady=5)

@@ -41,8 +41,14 @@ class ViewDataWindow:
 
     def calculate_total_expense(self):
         return sum(entry['amount'] for entry in self.data if entry['type'] == '支出')
+    def clear_previous_plot(self):
+        """清除之前的图形"""
+        if self.canvas:
+            self.canvas.get_tk_widget().destroy()
+            self.canvas = None  # 重置画布引用
 
     def plot_histogram(self):
+        self.clear_previous_plot()  # 清除之前的图形
         plt.rcParams['font.family'] = 'SimHei'
         plt.rcParams['axes.unicode_minus'] = False  # 正常显示负号
 
@@ -65,6 +71,7 @@ class ViewDataWindow:
         self.canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
 
     def plot_pie_chart(self):
+        self.clear_previous_plot()  # 清除之前的图形
         # 加载数据
         entries = self.finance_data.load_data()
 

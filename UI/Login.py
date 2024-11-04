@@ -37,9 +37,9 @@ class FinanceApp:
 
         register_button = tk.Button(self.root, text="注册", command=self.register)
         register_button.pack(pady=5)
-
-        back_button = tk.Button(self.root, text="返回", command=self.back)
-        back_button.pack(pady=5)
+#这两行没必要，login就是不需要返回键
+        # back_button = tk.Button(self.root, text="返回", command=self.back)
+        # back_button.pack(pady=5)
 
         exit_button = tk.Button(self.root, text="退出程序", command=self.root.quit)
         exit_button.pack(pady=5)
@@ -59,7 +59,7 @@ class FinanceApp:
 
     def open_main_window(self, username):
         self.clear_frame()  # 清空登录界面
-        MainWindow(self.root, username)  # 实例化主窗口
+        MainWindow(self.root, username,self)  # 实例化主窗口  做了一些修改，为了实现返回到这一集
 
     def register(self):
         username = self.username_entry.get()
