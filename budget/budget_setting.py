@@ -5,7 +5,7 @@ from tkinter import messagebox
 
 
 class BudgetSetting:
-    def __init__(self, username):
+    def __init__(self, username, isWindowOpen = True):
         self.username = username
         # 获取项目根目录的绝对路径
         base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -23,7 +23,8 @@ class BudgetSetting:
         }
 
         # 创建窗口
-        self.create_window()
+        if isWindowOpen:
+            self.create_window()
 
     def create_window(self):
         self.top = tk.Toplevel()  # 创建顶层窗口

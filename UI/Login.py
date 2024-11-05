@@ -49,8 +49,8 @@ class FinanceApp:
             widget.destroy()
 
     def login(self):
-        username = self.username_entry.get()
-        password = self.password_entry.get()
+        username = self.username_entry.get().strip()  # 去除首尾空格
+        password = self.password_entry.get().strip()  # 去除首尾空格
         if self.auth_system.login(username, password):  # 检查登录结果
             messagebox.showinfo("登录", f"欢迎回来, {username}!")
             self.open_main_window(username)  # 登录成功后打开主窗口
@@ -62,8 +62,8 @@ class FinanceApp:
         MainWindow(self.root, username,self)  # 实例化主窗口  做了一些修改，为了实现返回到这一集
 
     def register(self):
-        username = self.username_entry.get()
-        password = self.password_entry.get()
+        username = self.username_entry.get().strip()
+        password = self.password_entry.get().strip()
         try:
             result = self.auth_system.register(username, password)
             messagebox.showinfo("注册", result)

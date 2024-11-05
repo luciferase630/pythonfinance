@@ -5,7 +5,7 @@ from matplotlib import pyplot as plt
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from finance.Finance_Data import FinanceData
-from navigation import Navigation
+from budget.BudgetComparisonWindow import BudgetComparisonWindow
 
 class ViewDataWindow:
     def __init__(self, master, username: str):
@@ -29,6 +29,12 @@ class ViewDataWindow:
 
         self.pie_chart_button = tk.Button(self.top, text="绘制收入支出扇形图", command=self.plot_pie_chart)
         self.pie_chart_button.pack(pady=5)
+
+        # 在 __init__ 方法中添加 "收入支出预算对比" 按钮
+        self.budget_comparison_button = tk.Button(self.top, text="收入支出预算对比",
+                                                  command=self.open_budget_comparison_window)
+        self.budget_comparison_button.pack(pady=10)
+
 
         self.canvas_frame = tk.Frame(self.top)  # 用来存放绘图区域的 Frame
         self.canvas_frame.pack(fill=tk.BOTH, expand=True)
@@ -113,6 +119,10 @@ class ViewDataWindow:
         canvas.draw()
         canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
         self.canvas = canvas  # 更新当前画布引用
+
+    # 新函数，用来打开新的窗口
+    def open_budget_comparison_window(self):
+         bugetwindow = BudgetComparisonWindow(self.top,self.username)  # 调用新窗口的构造函数
 
 
 if __name__ == "__main__":
