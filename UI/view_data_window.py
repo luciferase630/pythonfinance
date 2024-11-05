@@ -24,15 +24,14 @@ class ViewDataWindow:
         self.label_total = tk.Label(self.top, text=f"总计: {self.total_balance:.2f}", font=("Arial", 16))
         self.label_total.pack(pady=10)
 
-        self.histogram_button = tk.Button(self.top, text="绘制直方图", command=self.plot_histogram)
+        self.histogram_button = tk.Button(self.top, text="绘制收入支出直方图", command=self.plot_histogram)
         self.histogram_button.pack(pady=5)
 
-        self.pie_chart_button = tk.Button(self.top, text="绘制扇形图", command=self.plot_pie_chart)
+        self.pie_chart_button = tk.Button(self.top, text="绘制收入支出扇形图", command=self.plot_pie_chart)
         self.pie_chart_button.pack(pady=5)
 
-        self.navigation = Navigation(self.top)
-        self.back_button = tk.Button(self.top, text="返回", command=self.navigation.go_back)
-        self.back_button.pack(pady=10)
+        self.canvas_frame = tk.Frame(self.top)  # 用来存放绘图区域的 Frame
+        self.canvas_frame.pack(fill=tk.BOTH, expand=True)
 
         self.canvas = None  # 用于保存画布引用
 
@@ -41,13 +40,12 @@ class ViewDataWindow:
 
     def calculate_total_expense(self):
         return sum(entry['amount'] for entry in self.data if entry['type'] == '支出')
+
     def clear_previous_plot(self):
-        """清除之前的图形"""
+        """清除之前的图形，只清除绘图区域"""
         if self.canvas:
             self.canvas.get_tk_widget().destroy()
             self.canvas = None  # 重置画布引用
-
-
 
     def plot_histogram(self):
         self.clear_previous_plot()  # 清除之前的图形
@@ -68,7 +66,7 @@ class ViewDataWindow:
         if self.canvas:
             self.canvas.get_tk_widget().destroy()
 
-        self.canvas = FigureCanvasTkAgg(fig, master=self.top)
+        self.canvas = FigureCanvasTkAgg(fig, master=self.canvas_frame)
         self.canvas.draw()
         self.canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
 
@@ -111,15 +109,10 @@ class ViewDataWindow:
         ax[1].set_title('支出分布')
 
         # 将图形嵌入到 Tkinter 窗口
-        canvas = FigureCanvasTkAgg(fig, master=self.top)
+        canvas = FigureCanvasTkAgg(fig, master=self.canvas_frame)
         canvas.draw()
         canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
-
-        # 清除之前的图形（如果有）
-        for widget in self.top.winfo_children():
-            if isinstance(widget, tk.Frame):
-                widget.destroy()
-        canvas.get_tk_widget().pack()
+        self.canvas = canvas  # 更新当前画布引用
 
 
 if __name__ == "__main__":
