@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import messagebox, filedialog
 from finance.Finance_Data import FinanceData
 import os
-
+import sys
 
 class SaveFileWindow:
     def __init__(self, master, username):
@@ -28,8 +28,10 @@ class SaveFileWindow:
     def save_file(self):
         # 获取选择的格式
         file_format = self.format_var.get()
-        # 创建项目根目录下的userDataFile文件夹路径
-        save_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "userDataFile")
+
+        # 确保路径兼容打包环境
+        base_dir = getattr(sys, '_MEIPASS', os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        save_dir = os.path.join(base_dir, "userDataFile")
         os.makedirs(save_dir, exist_ok=True)  # 如果文件夹不存在则创建
 
         # 根据用户名生成文件路径

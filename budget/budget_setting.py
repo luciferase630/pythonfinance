@@ -1,14 +1,16 @@
 import json
 import os
+import sys
 import tkinter as tk
 from tkinter import messagebox
 
 
 class BudgetSetting:
-    def __init__(self, username, isWindowOpen = True):
+    def __init__(self, username, isWindowOpen=True):
         self.username = username
-        # 获取项目根目录的绝对路径
-        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+        # 处理打包后环境的路径问题
+        base_dir = getattr(sys, '_MEIPASS', os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
         self.budget_folder = os.path.join(base_dir, "budgetData")  # 预算文件夹路径
         self.budget_file = os.path.join(self.budget_folder, f'{username}_budget.json')  # 用户预算文件路径
 
@@ -47,10 +49,9 @@ class BudgetSetting:
         self.label_category = tk.Label(self.top, text="选择预算类别:")
         self.label_category.pack(pady=5)
         self.category_var = tk.StringVar(self.top)
-        self.category_var.set("月度")  # 设置默认值为"月度"，显示更清晰
-        self.category_menu = tk.OptionMenu(self.top, self.category_var,
-                                            "月度", "年度",
-                                            command=self.update_menu_display)
+        self.category_var.set("月度")  # 设置默认值为"月度"
+        self.category_menu = tk.OptionMenu(self.top, self.category_var, "月度", "年度",
+                                           command=self.update_menu_display)
         self.category_menu.pack(pady=5)
 
         # 提交按钮
@@ -65,11 +66,10 @@ class BudgetSetting:
         self.update_menu_display()
 
     def update_menu_display(self, *args):
-        """更新菜单显示为中文"""
         selected = self.category_var.get()
         if selected == "Month":
-            self.category_menu['menu'].entryconfig(0, label="月度")  # 显示为“月度”
-            self.category_menu['menu'].entryconfig(1, label="年度")  # 显示为“年度”
+            self.category_menu['menu'].entryconfig(0, label="月度")
+            self.category_menu['menu'].entryconfig(1, label="年度")
         else:
             self.category_menu['menu'].entryconfig(0, label="月度")
             self.category_menu['menu'].entryconfig(1, label="年度")
@@ -78,7 +78,7 @@ class BudgetSetting:
         try:
             income_budget = float(self.entry_income.get())
             expense_budget = float(self.entry_expense.get())
-            budget_category_display = self.category_var.get()  # 获取显示的预算类别
+            budget_category_display = self.category_var.get()
 
             # 将显示的预算类别转换为存储值
             budget_category = self.category_mapping.get(budget_category_display, "month")
@@ -98,33 +98,33 @@ class BudgetSetting:
         budget_data = {
             "income_budget": income_budget,
             "expense_budget": expense_budget,
-            "category": category  # 添加预算类别
+            "category": category
         }
         self.save_budget(budget_data)
 
     def save_budget(self, budget_data):
         """保存预算数据到文件"""
-        with open(self.budget_file, "w") as json_file:
+        with open(self.budget_file, "w", encoding="utf-8") as json_file:
             json.dump(budget_data, json_file, ensure_ascii=False, indent=4)
 
     def load_budget(self):
         """加载预算数据"""
         if os.path.exists(self.budget_file):
-            if os.path.getsize(self.budget_file) > 0:  # 文件不为空
-                with open(self.budget_file, "r") as json_file:
+            if os.path.getsize(self.budget_file) > 0:
+                with open(self.budget_file, "r", encoding="utf-8") as json_file:
                     return json.load(json_file)
         # 如果文件不存在，则创建文件
-        self.save_budget({"income_budget": 0, "expense_budget": 0, "category": "month"})  # 创建空预算文件
-        return {}  # 返回空字典
+        self.save_budget({"income_budget": 0, "expense_budget": 0, "category": "month"})
+        return {}
 
     def clear_budget(self):
         """清空预算记录"""
-        # 将预算数据重置为空或默认值
         empty_budget_data = {"income_budget": 0, "expense_budget": 0, "category": "month"}
-        self.save_budget(empty_budget_data)  # 保存为空的预算数据
+        self.save_budget(empty_budget_data)
+
 
 if __name__ == "__main__":
-    root = tk.Tk()  # 创建主窗口
-    root.withdraw()  # 隐藏主窗口
-    budget_setting = BudgetSetting("user123")  # 实例化 BudgetSetting
-    root.mainloop()  # 启动主事件循环
+    root = tk.Tk()
+    root.withdraw()
+    budget_setting = BudgetSetting("user123")
+    root.mainloop()
