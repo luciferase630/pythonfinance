@@ -117,6 +117,12 @@ class BudgetSetting:
         self.save_budget({"income_budget": 0, "expense_budget": 0, "category": "month"})  # 创建空预算文件
         return {}  # 返回空字典
 
+    def clear_budget(self):
+        """清空预算记录"""
+        # 将预算数据重置为空或默认值
+        empty_budget_data = {"income_budget": 0, "expense_budget": 0, "category": "month"}
+        self.save_budget(empty_budget_data)  # 保存为空的预算数据
+
 if __name__ == "__main__":
     root = tk.Tk()  # 创建主窗口
     root.withdraw()  # 隐藏主窗口

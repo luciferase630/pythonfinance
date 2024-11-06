@@ -1,6 +1,7 @@
+import csv
 import json
 import os
-
+import pandas as pd
 class FinanceData:
     def __init__(self, username):
         base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -36,3 +37,35 @@ class FinanceData:
 
     def load_data(self):
         return self.get_entries()
+
+    def save_to_csv(self, file_path):
+        """将数据保存为 CSV 文件"""
+        with open(file_path, mode="w", newline='', encoding="utf-8") as file:
+            writer = csv.writer(file)
+            writer.writerow(["日期", "类型", "金额", "备注"])  # CSV 标题
+
+            # 遍历数据中的 "entries" 列表
+            for entry in self.data.get("entries", []):
+                # 每个条目是一个字典，确保正确访问键
+                writer.writerow([
+                    entry.get("date", ""),
+                    entry.get("type", ""),
+                    entry.get("amount", ""),
+                    entry.get("note", "")
+                ])
+
+    def save_to_excel(self, file_path):
+        """将数据保存为 Excel 文件"""
+        # 将数据转换为 DataFrame
+        df = pd.DataFrame(self.get_entries())
+        df.to_excel(file_path, index=False, sheet_name="财务数据")
+
+    def save_to_json(self, file_path):
+        """将数据保存为 JSON 文件"""
+        with open(file_path, "w", encoding="utf-8") as file:
+            json.dump(self.data, file, ensure_ascii=False, indent=4)
+
+    def clear_all_entries(self):
+        """清空所有预算条目"""
+        self.data = {"entries": []}  # 将 entries 列表置为空
+        self.save_financial_data()  # 保存清空后的数据到文件
