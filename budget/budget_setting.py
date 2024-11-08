@@ -16,7 +16,9 @@ class BudgetSetting:
 
         # 确保预算文件夹存在
         os.makedirs(self.budget_folder, exist_ok=True)
-        self.data = self.load_budget()  # 加载预算数据
+
+        # 加载预算数据
+        self.data = self.load_budget()  # 确保 load_budget 方法在此之前已定义
 
         # 创建用于映射显示值和存储值的字典
         self.category_mapping = {
@@ -27,6 +29,17 @@ class BudgetSetting:
         # 创建窗口
         if isWindowOpen:
             self.create_window()
+
+    def load_budget(self):
+        """加载预算数据"""
+        if os.path.exists(self.budget_file):
+            if os.path.getsize(self.budget_file) > 0:
+                with open(self.budget_file, "r", encoding="utf-8") as json_file:
+                    return json.load(json_file)
+
+        # 文件不存在或为空，则返回空的预算结构
+        return {"month": {"income_budget": 0, "expense_budget": 0},
+                "year": {"income_budget": 0, "expense_budget": 0}}
 
     def create_window(self):
         self.top = tk.Toplevel()  # 创建顶层窗口
@@ -67,7 +80,7 @@ class BudgetSetting:
 
     def update_menu_display(self, *args):
         selected = self.category_var.get()
-        if selected == "Month":
+        if selected == "月度":
             self.category_menu['menu'].entryconfig(0, label="月度")
             self.category_menu['menu'].entryconfig(1, label="年度")
         else:
@@ -95,32 +108,26 @@ class BudgetSetting:
 
     def set_budget(self, income_budget, expense_budget, category):
         """设置预算并保存到文件"""
-        budget_data = {
+        # 更新特定类别的预算数据
+        self.data[category] = {
             "income_budget": income_budget,
-            "expense_budget": expense_budget,
-            "category": category
+            "expense_budget": expense_budget
         }
-        self.save_budget(budget_data)
+        self.save_budget()  # 保存所有数据
 
-    def save_budget(self, budget_data):
+    def save_budget(self):
         """保存预算数据到文件"""
         with open(self.budget_file, "w", encoding="utf-8") as json_file:
-            json.dump(budget_data, json_file, ensure_ascii=False, indent=4)
-
-    def load_budget(self):
-        """加载预算数据"""
-        if os.path.exists(self.budget_file):
-            if os.path.getsize(self.budget_file) > 0:
-                with open(self.budget_file, "r", encoding="utf-8") as json_file:
-                    return json.load(json_file)
-        # 如果文件不存在，则创建文件
-        self.save_budget({"income_budget": 0, "expense_budget": 0, "category": "month"})
-        return {}
+            json.dump(self.data, json_file, ensure_ascii=False, indent=4)
 
     def clear_budget(self):
         """清空预算记录"""
-        empty_budget_data = {"income_budget": 0, "expense_budget": 0, "category": "month"}
-        self.save_budget(empty_budget_data)
+        # 清空月度和年度预算
+        self.data = {
+            "month": {"income_budget": 0, "expense_budget": 0},
+            "year": {"income_budget": 0, "expense_budget": 0}
+        }
+        self.save_budget()
 
 
 if __name__ == "__main__":

@@ -1,0 +1,10 @@
+{
+    "month": {
+        "income_budget": 6000.0,
+        "expense_budget": 3000.0
+    },
+    "year": {
+        "income_budget": 50000.0,
+        "expense_budget": 30000.0
+    }
+}

@@ -43,12 +43,18 @@ class FinanceData:
 
     def save_to_csv(self, file_path):
         """将数据保存为 CSV 文件"""
+        # 确保数据是列表格式
+        if isinstance(self.data, list):
+            entries = self.data
+        else:
+            raise ValueError("数据格式不正确，应该为列表格式")
+
         with open(file_path, mode="w", newline='', encoding="utf-8") as file:
             writer = csv.writer(file)
             writer.writerow(["日期", "类型", "金额", "备注"])  # CSV 标题
 
-            # 遍历数据中的 "entries" 列表
-            for entry in self.data.get("entries", []):
+            # 遍历数据列表并写入 CSV 文件
+            for entry in entries:
                 writer.writerow([
                     entry.get("date", ""),
                     entry.get("type", ""),
