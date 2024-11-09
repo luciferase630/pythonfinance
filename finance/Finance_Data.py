@@ -43,6 +43,9 @@ class FinanceData:
 
     def save_to_csv(self, file_path):
         """将数据保存为 CSV 文件"""
+        # 重新加载数据确保及时性
+        self.data = self.load_financial_data()
+
         # 确保数据是列表格式
         if isinstance(self.data, list):
             entries = self.data
@@ -64,9 +67,26 @@ class FinanceData:
 
     def save_to_excel(self, file_path):
         """将数据保存为 Excel 文件"""
-        # 将数据转换为 DataFrame
-        df = pd.DataFrame(self.get_entries())
-        df.to_excel(file_path, index=False, sheet_name="财务数据")
+        # 重新加载数据确保及时性
+        self.data = self.load_financial_data()
+
+        # 确保数据是列表格式且非空
+        if isinstance(self.data, list) and self.data:
+            try:
+                # 将数据转换为 DataFrame
+                df = pd.DataFrame(self.data)
+                # 确保数据包含所需的列，以防止缺少数据导致保存失败
+                required_columns = ["date", "type", "amount", "note"]
+                for col in required_columns:
+                    if col not in df.columns:
+                        df[col] = ""  # 添加缺失列并填充为空值
+
+                # 将数据写入 Excel 文件
+                df.to_excel(file_path, index=False, sheet_name="财务数据")
+            except Exception as e:
+                raise ValueError(f"保存到 Excel 失败: {e}")
+        else:
+            raise ValueError("数据格式不正确，应该为非空列表")
 
     def save_to_json(self, file_path):
         """将数据保存为 JSON 文件"""
