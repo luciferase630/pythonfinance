@@ -3,8 +3,8 @@ from tkinter import messagebox
 from matplotlib import pyplot as plt
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from finance.Finance_Data import FinanceData
-from budget.budget_setting import BudgetSetting
+from services.finance_service import FinanceService
+from services.budget_service import BudgetService
 import numpy as np
 
 
@@ -16,13 +16,13 @@ class BudgetComparisonWindow:
         self.top.title("收入支出预算对比")
         self.top.geometry("1600x1200")
 
-        # 实例化FinanceData类读取实际数据
-        self.finance_data = FinanceData(self.username)
-        self.data = self.finance_data.load_data()
+        # 通过服务层读取实际数据
+        self.finance_service = FinanceService(self.username)
+        self.data = self.finance_service.get_entries()
 
-        # 实例化BudgetSetting类读取预算数据
-        self.budget_setting = BudgetSetting(self.username, isWindowOpen=False)
-        self.budget_data = self.budget_setting.load_budget()
+        # 通过服务层读取预算数据
+        self.budget_service = BudgetService(self.username)
+        self.budget_data = self.budget_service.load_budget()
 
         # 创建输入框和按钮
         self.year_label = tk.Label(self.top, text="请输入年份:", font=("SimHei", 12))
