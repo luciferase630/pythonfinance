@@ -1,13 +1,14 @@
 import tkinter as tk
 from tkinter import messagebox
-from finance.Finance_Data import FinanceData
 from datetime import datetime
+
+from services.finance_service import FinanceService
 
 
 class EntryDataWindow:
-    def __init__(self, master, finance_data: FinanceData):
+    def __init__(self, master, finance_service: FinanceService):
         self.master = master
-        self.finance_data = finance_data
+        self.finance_service = finance_service
         self.top = tk.Toplevel(master)
         self.top.title("录入财务数据")
         self.top.geometry("400x300")  # 增大窗口大小
@@ -71,7 +72,7 @@ class EntryDataWindow:
             return
 
         # 添加财务数据
-        self.finance_data.add_entry(entry)
+        self.finance_service.add_entry(entry)
         messagebox.showinfo("信息", "财务数据已提交！")
         self.top.destroy()
 

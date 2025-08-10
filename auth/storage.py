@@ -4,7 +4,7 @@ import sys
 
 
 class Storage:
-    def __init__(self, filename='AccountData/users.json'):
+    def __init__(self, filename='Accountdata/users.json'):
         # 处理打包后的路径问题
         base_dir = getattr(sys, '_MEIPASS', os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
         self.filename = os.path.join(base_dir, filename)

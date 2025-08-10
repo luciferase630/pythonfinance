@@ -3,10 +3,9 @@ from tkinter import messagebox
 
 from UI.navigation import Navigation
 from UI.view_data_window import ViewDataWindow
-from auth.auth_system import AuthSystem  # 假设 AuthSystem 存在
-from auth.storage import Storage
+from services.finance_service import FinanceService
+from services.budget_service import BudgetService
 from budget.budget_setting import BudgetSetting
-from finance.Finance_Data import FinanceData
 
 from entry_data_window import EntryDataWindow  # 导入新的 EntryDataWindow 类
 from FileSavingModule.SaveFileWindow import SaveFileWindow
@@ -27,7 +26,8 @@ class MainWindow:
         self.master.geometry("1000x800")  # 设置窗口大小
 
         self.username = username
-        self.finance_data = FinanceData(self.username)  # 实例化 FinanceData
+        self.finance_service = FinanceService(self.username)
+        self.budget_service = BudgetService(self.username)
 
         # 创建按钮
         self.entry_button = tk.Button(master, text="录入财务数据", command=self.open_entry_data_window)
@@ -62,7 +62,7 @@ class MainWindow:
 
     def open_entry_data_window(self):
         """打开录入财务数据窗口"""
-        EntryDataWindow(self.master, self.finance_data)
+        EntryDataWindow(self.master, self.finance_service)
 
     def view_data(self):  # 添加此方法来调用 ViewDataWindow
         view_window = ViewDataWindow(self.master, self.username)
@@ -94,15 +94,13 @@ class MainWindow:
         """清空所有收支记录"""
         confirm = messagebox.askyesno("确认", "确定要清空所有收支记录吗？此操作无法撤销。")
         if confirm:
-            self.finance_data.clear_all_entries()  # 调用 FinanceData 的方法清空记录
+            self.finance_service.clear_all_entries()
             messagebox.showinfo("成功", "所有收支记录已清空。")
     def clearAllBudgetRecords(self):
         """清空所有预算记录"""
         confirm = messagebox.askyesno("确认", "确定要清空所有预算记录吗？此操作无法撤销。")
         if confirm:
-            # 实例化 BudgetSetting 并调用 clear_budget 方法
-            budget_setting = BudgetSetting(self.username, isWindowOpen=False)
-            budget_setting.clear_budget()
+            self.budget_service.clear_budget()
             messagebox.showinfo("成功", "所有预算记录已清空。")
 
 if __name__ == "__main__":

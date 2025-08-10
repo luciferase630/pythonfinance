@@ -4,7 +4,7 @@ from tkinter import messagebox
 from matplotlib import pyplot as plt
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from finance.Finance_Data import FinanceData
+from services.finance_service import FinanceService
 from budget.BudgetComparisonWindow import BudgetComparisonWindow
 
 class ViewDataWindow:
@@ -15,8 +15,8 @@ class ViewDataWindow:
         self.top.title("查看财务数据")
         self.top.geometry("600x400")  # 窗口大小
 
-        self.finance_data = FinanceData(self.username)  # 实例化 FinanceData
-        self.data = self.finance_data.load_data()  # 加载数据
+        self.finance_service = FinanceService(self.username)
+        self.data = self.finance_service.get_entries()
         self.total_income = self.calculate_total_income()
         self.total_expense = self.calculate_total_expense()
         self.total_balance = self.total_income - self.total_expense
@@ -79,7 +79,7 @@ class ViewDataWindow:
     def plot_pie_chart(self):
         self.clear_previous_plot()  # 清除之前的图形
         # 加载数据
-        entries = self.finance_data.load_data()
+        entries = self.finance_service.get_entries()
 
         # 初始化数据
         income_dict = {}
