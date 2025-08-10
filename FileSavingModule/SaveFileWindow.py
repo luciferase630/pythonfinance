@@ -1,14 +1,15 @@
 import tkinter as tk
 from tkinter import messagebox, filedialog
-from finance.Finance_Data import FinanceData
 import os
 import sys
+
+from services.finance_service import FinanceService
 
 class SaveFileWindow:
     def __init__(self, master, username):
         self.master = master
         self.username = username
-        self.finance_data = FinanceData(self.username)  # 实例化 FinanceData
+        self.finance_service = FinanceService(self.username)
 
         self.top = tk.Toplevel(master)
         self.top.title("保存文件")
@@ -40,9 +41,9 @@ class SaveFileWindow:
         try:
             # 根据选择的格式保存数据
             if file_format == "csv":
-                self.finance_data.save_to_csv(file_path)
+                self.finance_service.save_to_csv(file_path)
             elif file_format == "xlsx":
-                self.finance_data.save_to_excel(file_path)
+                self.finance_service.save_to_excel(file_path)
 
             messagebox.showinfo("保存文件", f"文件已成功保存到 {file_path}")
         except Exception as e:
